@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:hotelcollection/Models/Drawermodel.dart';
 
 
-class customerdata extends StatefulWidget {
+class CustomerData extends StatefulWidget {
+
   @override
-  _customerdataState createState() => _customerdataState();
+  _CustomerDataState createState() => _CustomerDataState();
 }
 
-class _customerdataState extends State<customerdata> {
+class _CustomerDataState extends State<CustomerData> {
   var currentPage = 0;
 /*  List pages=[
     Center(
@@ -95,6 +96,29 @@ class _customerdataState extends State<customerdata> {
               ...drawerMenu1.map((e) => fmenu1(e)),
               Divider(height: 1,thickness: 0,),
               ...drawerMenu2.map((e) => fmenu1(e)),
+
+              Divider(height: 1,thickness: 0,),
+              /// logout
+              ListTile(
+
+                leading: Icon(Icons.logout),
+                title: Text("Logout"),
+
+                contentPadding: EdgeInsets.symmetric(horizontal: 35,vertical: 0),
+                dense: true,
+
+                onTap: (){
+
+
+
+                },
+              )
+
+
+
+
+
+
 
 
 

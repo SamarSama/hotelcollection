@@ -31,6 +31,7 @@ class _hotelscreenState extends State<hotelscreen> {
      uid = user.uid;
     final uemail = user.email;
     base =database.reference().child("hotel");
+
     base.onChildAdded.listen((event) {
       print(event.snapshot.value.toString());
       Hotel p=Hotel.fromJson(event.snapshot.value);
@@ -50,6 +51,7 @@ class _hotelscreenState extends State<hotelscreen> {
   }
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
         body: Column(
           children: [
@@ -59,7 +61,13 @@ class _hotelscreenState extends State<hotelscreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: TextField(
+
+
+
+
                 onChanged: (char) {
+
+
                   if (char.isEmpty) {
 
                     setState(() {
@@ -71,17 +79,17 @@ class _hotelscreenState extends State<hotelscreen> {
                     allHotels=[];
                     for(Hotel model in searchList  )
                     {
-                      if (model.hotelGovernment!.contains(char)) {
+                      if (model.hotelGovernment!.contains(char)||
+                          model.hotelName!.contains(char)
+                          ||
+                          model.hotelAdress!.contains(char)
+                      ) {
                         allHotels.add(model);
                       }
                     }
 
                     setState(() {
                     });
-
-
-
-
                   }
 
 

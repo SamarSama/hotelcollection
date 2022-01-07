@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hotelcollection/Models/Drawermodel.dart';
-import 'package:hotelcollection/Ui/hotelscreen.dart';
-import 'package:hotelcollection/Ui/userdata_screen.dart';
+import 'package:hotelcollection/cache_data/cache_data_imp_helper.dart';
+import 'package:hotelcollection/ui/hotelscreen.dart';
+import 'package:hotelcollection/ui/open.dart';
+import 'package:hotelcollection/ui/userdata_screen.dart';
+
 
 class CustomerData extends StatefulWidget {
 
@@ -11,6 +15,8 @@ class CustomerData extends StatefulWidget {
 }
 
 class _CustomerDataState extends State<CustomerData> {
+
+  CacheDataImpHelper cacheDataImpHelper=CacheDataImpHelper();
   var currentPage = 0;
 /*  List pages=[
     Center(
@@ -108,7 +114,16 @@ class _CustomerDataState extends State<CustomerData> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 35,vertical: 0),
                 dense: true,
 
-                onTap: (){
+                onTap: () async{
+
+               await FirebaseAuth.instance.signOut();
+               cacheDataImpHelper.setEmail("");
+               cacheDataImpHelper.setPassword("");
+               cacheDataImpHelper.setUserType("");
+               Navigator.of(context)
+               .pushReplacement(MaterialPageRoute(builder: (context) => open(),));
+
+
 
 
 
@@ -140,7 +155,7 @@ class _CustomerDataState extends State<CustomerData> {
 
       onTap: (){
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(item.drawertext)));
+        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(item.drawertext)));
 
         switch(item.index){
           case 0:

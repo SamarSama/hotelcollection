@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hotelcollection/Ui/admin.dart';
 import 'package:hotelcollection/Ui/register.dart';
+import 'package:hotelcollection/cache_data/cache_data_imp_helper.dart';
+import 'package:hotelcollection/utils/data/data_helper.dart';
 
 import 'customerdata.dart';
 
@@ -13,6 +15,7 @@ class adminanduserlogin extends StatelessWidget {
   final TextEditingController emailCon = TextEditingController();
   bool isArabic = false;
   final TextEditingController passwordCon = TextEditingController();
+  CacheDataImpHelper cacheDataImpHelper=CacheDataImpHelper();
   adminanduserlogin( {Key? key, required this.text}) : super(key: key);
 
   @override
@@ -100,17 +103,30 @@ class adminanduserlogin extends StatelessWidget {
                     if(text=="Admin"){
                       if(emailCon.text=="admin" && passwordCon.text=="123")
                         {
+
+                          cacheDataImpHelper.setUserType(DataHelper.ADMIN_TYPE);
+
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => admin()));
                         }
 
                     }
                     else{
+
+
+
                       try {
                         UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
                             email: emailCon.text,
                             password: passwordCon.text
                         );
+
+
+
+
+                        cacheDataImpHelper.setUserType(DataHelper.USER_TYPE);
+                        cacheDataImpHelper.setEmail(emailCon.text);
+                        cacheDataImpHelper.setPassword(passwordCon.text);
 
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CustomerData()));
                       } on FirebaseAuthException catch (e) {

@@ -7,8 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/services.dart';
 import 'package:hotelcollection/Models/hotel.dart';
+import 'package:hotelcollection/cache_data/cache_data_imp_helper.dart';
+import 'package:hotelcollection/ui/open.dart';
 import 'package:image_picker/image_picker.dart';
 
 class admin extends StatefulWidget {
@@ -21,17 +24,33 @@ class admin extends StatefulWidget {
 
 class _adminState extends State<admin> {
 
+  CacheDataImpHelper cacheDataImpHelper=CacheDataImpHelper();
+
   Future Pickimage() async {
     try{
+
+      print("1111111111111");
       final image=  await ImagePicker().pickImage(source: ImageSource.gallery);
+      print("222222222");
       if(image==null)
-        return;
+        {
+          print("3333333333");
+          return;
+        }
+
       final current_image=image.path;
-      setState(() =>
-        this.imagge=File(image.path)
+      print("44444444444");
+      setState(() {
+        this.imagge=File(image.path);
+
+
+        print("55555555555");
+        print(imagge?.path);
+        picker=File(image.path).toString();
+      }
 
       );
-      picker=File(image.path).toString();
+
 
     }on PlatformException catch(e) {
       print(e);
@@ -44,6 +63,12 @@ class _adminState extends State<admin> {
   }
 
   var currentPage = 0;
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+
+  late firebase_storage.Reference refStorage ;
+
+
   final TextEditingController HotelNameCon = TextEditingController();
   final TextEditingController HotelStarsCon = TextEditingController();
   final TextEditingController HotelGovernmentCon = TextEditingController();
@@ -54,7 +79,7 @@ class _adminState extends State<admin> {
   late FirebaseApp  app;
   double ratingEnd=0.0;
   late DatabaseReference base;
-  File?imagge;
+  File? imagge;
 
 
   late String  picker;
@@ -69,6 +94,23 @@ class _adminState extends State<admin> {
     // TODO: implement initState
     super.initState();
     startRealTimeFirebase();
+
+    refStorage =  storage.ref('/samar_images').child("images");
+
+  }
+
+
+
+  void startRealTimeFirebase()async {
+    app = await Firebase.initializeApp();
+    database = FirebaseDatabase(app: app);
+    // FirebaseUser firebaseUser= await   FirebaseAuth.instance.currentUser();
+    base = database.reference().child("hotel");
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
     pages = [
       {
         "body": Center(
@@ -238,68 +280,46 @@ class _adminState extends State<admin> {
                       )),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                  child:ElevatedButton.icon(onPressed: () {
-                    Pickimage();
+                    padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                    child:ElevatedButton.icon(onPressed: () async{
 
-                  }
+                      await Pickimage();
 
-                  ,
-                  label: Text("pick image"),
-                  icon:Icon(Icons.image) ,
+                    }
+
+                      ,
+                      label: Text("pick image"),
+                      icon:Icon(Icons.image) ,
 
 
 
 
-                  )
+                    )
                 ),
-      Padding(
-      padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-      child:imagge!=null?Text(imagge.toString()):Text("ىعنن"),
+                SizedBox(
+                  height: 100,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                    child:
 
-      ),
+                    Image.file(
+                        imagge
+                        ?? File("")
+                    ,errorBuilder:(context, error, stackTrace) =>
+                        Icon(Icons.supervised_user_circle),
+                    )
+                    ,
+
+                  ),
+                ),
                 Padding(
                     padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                     child:ElevatedButton(onPressed: () {
-                       String HotelName = HotelNameCon.text.trim();
-                       int HotelStars =int.parse(HotelStarsCon.text.trim()) ;
-                       String HotelGovernment = HotelGovernmentCon.text.trim();
-                       String HotelQueryPhone = HotelQueryPhoneCon.text.trim();
-                       String HotelAdress =HotelAdressCon.text.trim() ;
-                       String url =picker ;
-                      Hotel hotel=Hotel(
-                        hotelName: HotelName,
-                        hotelStarsNo: HotelStars,
-                        hotelGovernment: HotelGovernment,
-                        hotelQueryPhone:HotelQueryPhone,
-                        hotelAdress:HotelAdress,
-                        hotelImage:url,
-                        // rate: ratingEnd
-                      );
-                      showDialog<void>(
-                        context: context,
-                        barrierDismissible: false,
-                        // false = user must tap button, true = tap outside dialog
-                        builder: (BuildContext dialogContext) {
-                          return AlertDialog(
-                            title: Text('Loading....'),
-                            content: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CircularProgressIndicator(),
-                              ],
-                            ),
 
-                          );
-                        },
-                      );
+                      uploadImageToFirestore(imagge!);
 
-                       base.push().set(hotel.toJson()).whenComplete(() {
-                       Navigator.of(context).pop();
-                       ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text("success ")));
 
-                                         });
+
 
 
                     },
@@ -331,17 +351,6 @@ class _adminState extends State<admin> {
       },
 
     ];
-
-
-  }
-  void startRealTimeFirebase()async {
-    app = await Firebase.initializeApp();
-    database = FirebaseDatabase(app: app);
-    // FirebaseUser firebaseUser= await   FirebaseAuth.instance.currentUser();
-    base = database.reference().child("hotel");
-  }
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: pages[currentPage]["title"], //pages[0]
@@ -350,7 +359,16 @@ class _adminState extends State<admin> {
         child: Container(
           child: pages[currentPage]["body"],
         ),
-      ), //child safearea =
+      ),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+
+        cacheDataImpHelper.setEmail("");
+        cacheDataImpHelper.setPassword("");
+        cacheDataImpHelper.setUserType("");
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) => open(),));
+
+      },child: Icon(Icons.logout),),//child safearea =
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.green[50],
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -374,6 +392,7 @@ class _adminState extends State<admin> {
             icon: Icon(Icons.ten_k_sharp),
             label: "Reports",
           ),
+
         ],
         currentIndex: currentPage,
         onTap: (index) {
@@ -384,6 +403,71 @@ class _adminState extends State<admin> {
         },
       ),
     );
+  }
+
+  void uploadImageToFirestore(File imgFile){
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      // false = user must tap button, true = tap outside dialog
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text('Loading....'),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+            ],
+          ),
+
+        );
+      },
+    );
+
+    refStorage.child(DateTime.now().microsecondsSinceEpoch.toString()).putFile(imgFile).then((p0) async{
+      String imgUrl= await p0.ref.getDownloadURL();
+
+      print(imgUrl);
+
+      String HotelName = HotelNameCon.text.trim();
+      int HotelStars =int.parse(HotelStarsCon.text.trim()) ;
+      String HotelGovernment = HotelGovernmentCon.text.trim();
+      String HotelQueryPhone = HotelQueryPhoneCon.text.trim();
+      String HotelAdress =HotelAdressCon.text.trim() ;
+
+      Hotel hotel=Hotel(
+        hotelName: HotelName,
+        hotelStarsNo: HotelStars,
+        hotelGovernment: HotelGovernment,
+        hotelQueryPhone:HotelQueryPhone,
+        hotelAdress:HotelAdress,
+        hotelImage:imgUrl,
+        // rate: ratingEnd
+      );
+
+
+      base.push().set(hotel.toJson()).whenComplete(() {
+
+        setState(() {
+          imagge=null;
+        });
+
+      HotelNameCon.text="";
+        HotelStarsCon.text="";
+        HotelGovernmentCon.text="";
+        HotelQueryPhoneCon.text="";
+         HotelAdressCon.text="";
+         HotelImageCon.text="";
+
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("success ")));
+
+      });
+
+
+    });
+
   }
 }
 

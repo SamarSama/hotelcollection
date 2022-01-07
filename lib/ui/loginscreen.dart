@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:hotelcollection/Ui/admin.dart';
 import 'package:hotelcollection/Ui/customerdata.dart';
 import 'package:hotelcollection/Ui/register.dart';
+import 'package:hotelcollection/cache_data/cache_data_imp_helper.dart';
+import 'package:hotelcollection/main.dart';
 
 class loginscreen extends StatefulWidget {
   final String text;
@@ -20,12 +22,16 @@ class _loginscreenState extends State<loginscreen> {
   final TextEditingController emailCon = TextEditingController();
   bool isArabic = false;
   final TextEditingController passwordCon = TextEditingController();
+  CacheDataImpHelper cacheDataImpHelper= CacheDataImpHelper();
+
   @override
   Widget build(BuildContext context) {
     @override
     void initState() {
       // TODO: implement initState
       super.initState();
+
+
     }
     return Scaffold(
         appBar: AppBar(

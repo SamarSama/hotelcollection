@@ -26,9 +26,9 @@ class _adminState extends State<admin> {
       final image=  await ImagePicker().pickImage(source: ImageSource.gallery);
       if(image==null)
         return;
-      final current_image=File(image.path);
+      final current_image=image.path;
       setState(() =>
-        this.imagge=current_image
+        this.imagge=File(image.path)
 
       );
       picker=File(image.path).toString();

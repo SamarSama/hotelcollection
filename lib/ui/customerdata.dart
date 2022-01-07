@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hotelcollection/Models/Drawermodel.dart';
-
+import 'package:hotelcollection/Ui/hotelscreen.dart';
+import 'package:hotelcollection/Ui/userdata_screen.dart';
 
 class CustomerData extends StatefulWidget {
 
@@ -28,8 +29,8 @@ class _CustomerDataState extends State<CustomerData> {
   ];*/
 
   List drawerMenu1=[
-    Drawermodel(Icons.dashboard, "Dashboard",0),
-    Drawermodel(Icons.contacts, "Contacts",1),
+    Drawermodel(Icons.dashboard, "User Date",0),
+    Drawermodel(Icons.contacts, "Add Image",1),
     Drawermodel(Icons.notes, "Notes",2),
     Drawermodel(Icons.event, "Events",3),
   ];
@@ -144,11 +145,11 @@ class _CustomerDataState extends State<CustomerData> {
         switch(item.index){
           case 0:
            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(item.text)));
-           // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>userdata_screen()));
             break;
           case 1:
             //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(item.text)));
-           // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Contacts()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>hotelscreen()));
             break;
         }
       },

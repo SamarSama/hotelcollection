@@ -77,8 +77,8 @@ class _adminState extends State<admin> {
   final TextEditingController HotelImageCon = TextEditingController();
   late FirebaseDatabase database;
   late FirebaseApp  app;
-  double ratingEnd=0.0;
   late DatabaseReference base;
+  double ratingEnd=0.0;
   File? imagge;
 
 

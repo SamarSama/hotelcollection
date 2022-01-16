@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:hotelcollection/Models/hotel.dart';
+import 'package:hotelcollection/Models/hotel1.dart';
 
 class ProductDetaitlsScreen extends StatefulWidget {
-  const ProductDetaitlsScreen(Hotel allHotel, {Key? key}) : super(key: key);
+  const ProductDetaitlsScreen(Hotel1 allHotel, {Key? key}) : super(key: key);
 
   @override
   _ProductDetaitlsScreenState createState() => _ProductDetaitlsScreenState();

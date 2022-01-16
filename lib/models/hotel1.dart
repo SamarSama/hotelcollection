@@ -4,30 +4,34 @@
 /// HotelQueryPhone : "0105646446"
 /// HotelAdress : "hgjh"
 /// HotelImage : "hgjh"
+/// HotelId : "ugudgccccjiok"
 
-class Hotel {
-  Hotel({
+class Hotel1 {
+  Hotel1({
       String? hotelName, 
       int? hotelStarsNo, 
       String? hotelGovernment, 
       String? hotelQueryPhone, 
       String? hotelAdress, 
-      String? hotelImage,}){
+      String? hotelImage, 
+      String? hotelId,}){
     _hotelName = hotelName;
     _hotelStarsNo = hotelStarsNo;
     _hotelGovernment = hotelGovernment;
     _hotelQueryPhone = hotelQueryPhone;
     _hotelAdress = hotelAdress;
     _hotelImage = hotelImage;
+    _hotelId = hotelId;
 }
 
-  Hotel.fromJson(dynamic json) {
+  Hotel1.fromJson(dynamic json) {
     _hotelName = json['HotelName'];
     _hotelStarsNo = json['HotelStarsNo'];
     _hotelGovernment = json['HotelGovernment'];
     _hotelQueryPhone = json['HotelQueryPhone'];
     _hotelAdress = json['HotelAdress'];
     _hotelImage = json['HotelImage'];
+    _hotelId = json['HotelId'];
   }
   String? _hotelName;
   int? _hotelStarsNo;
@@ -35,6 +39,7 @@ class Hotel {
   String? _hotelQueryPhone;
   String? _hotelAdress;
   String? _hotelImage;
+  String? _hotelId;
 
   String? get hotelName => _hotelName;
   int? get hotelStarsNo => _hotelStarsNo;
@@ -42,6 +47,7 @@ class Hotel {
   String? get hotelQueryPhone => _hotelQueryPhone;
   String? get hotelAdress => _hotelAdress;
   String? get hotelImage => _hotelImage;
+  String? get hotelId => _hotelId;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -51,6 +57,7 @@ class Hotel {
     map['HotelQueryPhone'] = _hotelQueryPhone;
     map['HotelAdress'] = _hotelAdress;
     map['HotelImage'] = _hotelImage;
+    map['HotelId'] = _hotelId;
     return map;
   }
 

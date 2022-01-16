@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hotelcollection/Ui/admin.dart';
@@ -8,6 +10,8 @@ import 'package:hotelcollection/ui/customerdata.dart';
 import 'package:hotelcollection/utils/data/data_helper.dart';
 
 import 'adminanduserlogin.dart';
+import 'hotel_Login.dart';
+import 'hotelareahome.dart';
 
 class open extends StatefulWidget {
 
@@ -18,12 +22,16 @@ class open extends StatefulWidget {
 }
 
 class _openState extends State<open> {
+  late FirebaseDatabase database;
+  late DatabaseReference Hoteldata;
+  late FirebaseApp app;
   CacheDataImpHelper cacheDataImpHelper=CacheDataImpHelper();
   @override
 
 void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
+
     loginCache(context);
 
   }
@@ -41,7 +49,13 @@ void didChangeDependencies() {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) =>
+                    hotelhotel(),));
+              },
               child: Text("دخول الفنادق"),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
@@ -50,7 +64,7 @@ void didChangeDependencies() {
             ElevatedButton(
               onPressed: () {
                 String textToSend = "User";
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
@@ -64,7 +78,7 @@ void didChangeDependencies() {
             ElevatedButton(
               onPressed: () {
                 String textToSend = "Admin";
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
@@ -92,33 +106,55 @@ void didChangeDependencies() {
   }
 
   void loginCache(BuildContext cc)async{
+    print("444444444");
 
     String userType=cacheDataImpHelper.getUserType();
+    print(userType);
 
     if (userType==DataHelper.ADMIN_TYPE) {
 
+      print("55555555");
 
-      Future.delayed(Duration(microseconds: 200),(){
+      Future.delayed(Duration(milliseconds: 200),(){
         Navigator.of(cc).pushReplacement(
             MaterialPageRoute(builder: (cc) => admin()));
       });
 
-
     } else if (userType==DataHelper.HOTEL_TYPE){
+      try {
+        String Hotelcode=cacheDataImpHelper.getHotelCode();
 
+        if (Hotelcode.isEmpty) {
+          return;
+
+        }
+       else{
+          app  =  await Firebase.initializeApp();
+          database = FirebaseDatabase(app: app);
+          Hoteldata=database.reference().child("hotel");
+          Query t=Hoteldata.orderByChild("HotelId").equalTo(Hotelcode);
+          t.onValue.listen((event) {
+              cacheDataImpHelper.setUserType(DataHelper.HOTEL_TYPE);
+              cacheDataImpHelper.setHotelCode(Hotelcode);
+              print(Hotelcode);
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HotelAreaHome(text: Hotelcode,)));
+          });
+
+        }
+      } on FirebaseAuthException catch (e) {
+
+
+      }
 
     }
 
-    else
+    else if(userType==DataHelper.USER_TYPE)
       {
         try {
-
           String email=cacheDataImpHelper.getEmail();
           String password=cacheDataImpHelper.getPassword();
-
           if (email.isEmpty||password.isEmpty) {
             return;
-
           }
           UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
               email: email,

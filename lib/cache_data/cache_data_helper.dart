@@ -8,7 +8,8 @@ abstract class CacheDataHelper{
 
   void setPassword(String password);
   String getPassword();
-
+  void setHotelCode(String hotelcode);
+  String getHotelCode();
 
 
 }

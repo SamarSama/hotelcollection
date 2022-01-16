@@ -6,16 +6,13 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/services.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:flutter/services.dart';
-import 'package:hotelcollection/Models/hotel.dart';
+import 'package:hotelcollection/Models/hotel1.dart';
 import 'package:hotelcollection/cache_data/cache_data_imp_helper.dart';
 import 'package:hotelcollection/ui/open.dart';
 import 'package:image_picker/image_picker.dart';
 
 class admin extends StatefulWidget {
-
   const admin({Key? key}) : super(key: key);
 
   @override
@@ -23,30 +20,17 @@ class admin extends StatefulWidget {
 }
 
 class _adminState extends State<admin> {
-
   CacheDataImpHelper cacheDataImpHelper=CacheDataImpHelper();
-
   Future Pickimage() async {
     try{
-
-      print("1111111111111");
       final image=  await ImagePicker().pickImage(source: ImageSource.gallery);
-      print("222222222");
       if(image==null)
         {
-          print("3333333333");
           return;
         }
-
-      final current_image=image.path;
-      print("44444444444");
       setState(() {
         this.imagge=File(image.path);
-
-
-        print("55555555555");
         print(imagge?.path);
-        picker=File(image.path).toString();
       }
 
       );
@@ -78,14 +62,7 @@ class _adminState extends State<admin> {
   late FirebaseDatabase database;
   late FirebaseApp  app;
   late DatabaseReference base;
-  double ratingEnd=0.0;
   File? imagge;
-
-
-  late String  picker;
-  // Pick an image
-  
-
   List<Map<String, Widget>> pages = [
 
   ];
@@ -94,7 +71,6 @@ class _adminState extends State<admin> {
     // TODO: implement initState
     super.initState();
     startRealTimeFirebase();
-
     refStorage =  storage.ref('/samar_images').child("images");
 
   }
@@ -434,14 +410,15 @@ class _adminState extends State<admin> {
       String HotelGovernment = HotelGovernmentCon.text.trim();
       String HotelQueryPhone = HotelQueryPhoneCon.text.trim();
       String HotelAdress =HotelAdressCon.text.trim() ;
-
-      Hotel hotel=Hotel(
+      String HotelId = base.push().key;
+      Hotel1 hotel=Hotel1(
         hotelName: HotelName,
         hotelStarsNo: HotelStars,
         hotelGovernment: HotelGovernment,
         hotelQueryPhone:HotelQueryPhone,
         hotelAdress:HotelAdress,
         hotelImage:imgUrl,
+          hotelId: HotelId,
         // rate: ratingEnd
       );
 

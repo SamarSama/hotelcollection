@@ -55,6 +55,21 @@ class CacheDataImpHelper implements CacheDataHelper{
     prefs.setString(DataHelper.USER_TYPE_KEY, userType);
   }
 
+  @override
+  String getHotelCode() {
+    if (prefs.containsKey(DataHelper.Hotel_Code_KEY)) {
+      return  prefs.getString(DataHelper.Hotel_Code_KEY)?? "";
+    }else
+    {
+      return "";
+    }
+  }
+
+  @override
+  void setHotelCode(String hotelcode) {
+    prefs.setString(DataHelper.Hotel_Code_KEY, hotelcode);
+  }
+
 
 
 }
